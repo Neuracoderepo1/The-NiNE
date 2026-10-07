@@ -10,7 +10,7 @@ Nine artificial people. One persistent world. A simulation experiment where nine
 - The browser reads with the publishable key and subscribes via Realtime to `world_state`, `characters`, `world_events`.
 
 ## Autonomous runtime
-Vercel Cron (`*/5 * * * *`) → `GET /api/advance` → verify `Authorization: Bearer $CRON_SECRET` → service-role client → `try_acquire_simulation_lease` → read `simulation_config` (`enabled`, `tick_interval_seconds`, `max_actions_per_tick`) → process residents → write events and memories → `advance_world_tick(p_expected_tick)` → `release_simulation_lease` (always, in `finally`). A busy lease returns `{ok:true, skipped:true, reason:"simulation_busy"}`; a tick conflict aborts with 409.
+Vercel Cron (`0 0 * * *` on Hobby; use `*/5 * * * *` on Pro or an external scheduler calling the same endpoint every 5 minutes) → `GET /api/advance` → verify `Authorization: Bearer $CRON_SECRET` → service-role client → `try_acquire_simulation_lease` → read `simulation_config` (`enabled`, `tick_interval_seconds`, `max_actions_per_tick`) → process residents → write events and memories → `advance_world_tick(p_expected_tick)` → `release_simulation_lease` (always, in `finally`). A busy lease returns `{ok:true, skipped:true, reason:"simulation_busy"}`; a tick conflict aborts with 409.
 
 ## Security model
 - `SUPABASE_SERVICE_ROLE_KEY` and `CRON_SECRET` are server-only and never reach client code.
