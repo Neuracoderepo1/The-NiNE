@@ -4,7 +4,7 @@ import { timingSafeEqual, randomUUID } from 'node:crypto';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
-export const maxDuration = 60;
+export const maxDuration = 120;
 
 const json = (body: unknown, status = 200) => NextResponse.json(body, { status });
 
