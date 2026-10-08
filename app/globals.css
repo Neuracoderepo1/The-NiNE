@@ -9,3 +9,24 @@
  .label b{font-size:10px;font-weight:600}
  .label em{display:none}
 }
+
+/* Phase 1: world events, chronicle, personality */
+.feed .world-event{border-left:2px solid #a9d1a7;padding-left:12px}
+.feed .world-event b{color:#c9d8c6}
+.chronicle{padding:34px 0;border-top:1px solid #292c29}
+.chron-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px}
+.chron-tabs button{background:none;border:1px solid #30352f;padding:8px 12px;font-size:10px;letter-spacing:.12em;color:#8e958d;cursor:pointer}
+.chron-tabs button.on{background:#e9e5dc;color:#0b0d0c;border-color:#e9e5dc}
+.chron-body{display:grid;grid-template-columns:1.2fr 1fr;gap:34px}
+.chron-summary{font:19px/1.55 Georgia,serif;color:#d6d2c8;margin:12px 0 18px}
+.chron-chips{display:flex;gap:8px;flex-wrap:wrap}
+.chron-chips span{font-size:10px;letter-spacing:.1em;padding:5px 8px;border:1px solid #30352f;color:#8e958d}
+.chron-chips .up{color:#a9d1a7;border-color:#3b4a3a}.chron-chips .down{color:#d1a7a7;border-color:#4a3a3a}
+.chron-body .mini{margin:10px 0}.chron-body .mini b{color:#8e958d;font-size:10px;letter-spacing:.1em;margin-right:6px}
+.traits{font-size:10px!important;letter-spacing:.08em;color:#6f756e!important}
+.reason{font:italic 16px/1.5 Georgia,serif;color:#b9b7ac;margin:6px 0 0}
+.traitbars>div{display:grid;grid-template-columns:130px 1fr 38px;align-items:center;gap:10px;margin:7px 0;font-size:12px;color:#aeb1aa}
+.traitbars i{display:block;height:4px;background:#222722}.traitbars u{display:block;height:100%;background:#a9d1a7}
+.traitbars em{font-style:normal;text-align:right;color:#777d76;font-size:11px}
+.rel{display:flex;gap:10px;font-size:13px;color:#aeb1aa;margin:7px 0}.rel span{color:#777d76}.rel em{margin-left:auto;font-style:normal;color:#9fa49e}
+@media(max-width:900px){.chron-body{grid-template-columns:1fr;gap:20px}.traitbars>div{grid-template-columns:105px 1fr 34px}}
