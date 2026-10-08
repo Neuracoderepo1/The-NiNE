@@ -149,8 +149,8 @@ export async function GET(req: NextRequest) {
         if (w.data?.ok === false) meta.world_action_rejected = w.data.reason;
         else if (w.data?.resources) ctx.resources = w.data.resources;
       }
-      if (d.type === 'work' && c.role === 'healer' && rnd() < 0.5) {
-        try { await adjustResources({ medicine: 1 }); } catch (e: any) { warnings.push(`healer_work: ${String(e?.message ?? e)}`); }
+      if (d.type === 'work' && c.role === 'healer' && rnd() < 0.6) {
+        try { await adjustResources({ medicine: 2 }); } catch (e: any) { warnings.push(`healer_work: ${String(e?.message ?? e)}`); }
       }
       if (d.type === 'help' && d.target) meta.target = d.target.name;
       if (d.type === 'explore') explorers.push(c);

@@ -16,6 +16,9 @@ export function rngFor(seed: string): () => number {
   };
 }
 
+// Stable per-resident variation so the nine never move in lockstep.
+export const hashId = (id: string) => { let h = 0; for (let i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) >>> 0; return h; };
+
 export type ActionType = 'eat' | 'rest' | 'talk' | 'work' | 'explore' | 'help' | 'reflect';
 export type Ctx = {
   tick: number; day: number; hour: number; season: string; weather: string;
@@ -68,7 +71,8 @@ export function decide(c: any, ctx: Ctx, rnd: () => number): Decision {
   const caring = Math.max(T('empathetic'), T('generous'), T('community-minded'), T('protective'));
 
   // Survival gates keep residents alive regardless of personality.
-  if (food < 28 && R('food') > 0) return { type: 'eat', target: null, reason: 'Hunger could not wait any longer.', urgent: true, scores: {} };
+  const hungerGate = 24 + (hashId(c.id) % 10);
+  if (food < hungerGate && R('food') > 0) return { type: 'eat', target: null, reason: 'Hunger could not wait any longer.', urgent: true, scores: {} };
   if (energy < 24) return { type: 'rest', target: null, reason: 'Exhaustion forced a stop.', urgent: true, scores: {} };
 
   const s: Record<ActionType, number> = { eat: 0, rest: 0, talk: 0, work: 0, explore: 0, help: 0, reflect: 0 };
@@ -169,7 +173,7 @@ export function applyNeeds(c: any, d: Decision, ctx: Ctx, rnd: () => number, soc
   const night = isNight(ctx.hour);
   const sociable = Math.max(T('social'), T('community-minded'), T('empathetic'), T('persuasive'));
 
-  food -= 4;
+  food -= 3 + (hashId(c.id) % 3) + (d.type === 'explore' ? 1 : 0);
   energy -= 6 + (d.type === 'explore' ? 5 : 0) + (d.type === 'work' ? 2 + (T('ambitious') > 0.7 ? 1 : 0) : 0);
   socialNeed -= 2 + Math.round(sociable * 2);
 
