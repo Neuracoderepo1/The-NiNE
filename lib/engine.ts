@@ -66,7 +66,7 @@ export function decide(c: any, ctx: Ctx, rnd: () => number): Decision {
   const food = num(needs.food, 70), energy = num(needs.energy, 80), social = num(needs.social, 50);
   const night = isNight(ctx.hour);
   const R = (k: string) => num(ctx.resources[k], 0);
-  const others = ctx.chars.filter((x) => x.id !== c.id && x.location === c.location);
+  const others = ctx.chars.filter((x) => x.id !== c.id);
   const sociable = Math.max(T('social'), T('community-minded'), T('empathetic'), T('persuasive'));
   const caring = Math.max(T('empathetic'), T('generous'), T('community-minded'), T('protective'));
 
@@ -74,6 +74,7 @@ export function decide(c: any, ctx: Ctx, rnd: () => number): Decision {
   const hungerGate = 24 + (hashId(c.id) % 10);
   if (food < hungerGate && R('food') > 0) return { type: 'eat', target: null, reason: 'Hunger could not wait any longer.', urgent: true, scores: {} };
   if (energy < 24) return { type: 'rest', target: null, reason: 'Exhaustion forced a stop.', urgent: true, scores: {} };
+  if (num(needs.health, 90) < 20) return { type: 'rest', target: null, reason: 'Too unwell to do anything but rest.', urgent: true, scores: {} };
 
   const s: Record<ActionType, number> = { eat: 0, rest: 0, talk: 0, work: 0, explore: 0, help: 0, reflect: 0 };
   const why: Record<ActionType, string> = {
@@ -191,7 +192,8 @@ export function applyNeeds(c: any, d: Decision, ctx: Ctx, rnd: () => number, soc
   // Health pressure and recovery give carers something real to respond to.
   if (food < 20) health -= 2;
   if (energy < 15) health -= 1;
-  if (['storm', 'snow', 'cold'].includes(ctx.weather) && !['rest', 'reflect', 'eat'].includes(d.type) && rnd() < 0.35) health -= 1;
+  if (['storm', 'snow', 'cold'].includes(ctx.weather) && !['rest', 'reflect', 'eat'].includes(d.type) && rnd() < 0.2) health -= 1;
+  if (d.type === 'rest' && food > 25) health += 2;
   const hurt = (d.type === 'work' || d.type === 'explore') && rnd() < 0.03;
   if (hurt) health -= 12;
   if (food > 50 && energy > 50 && rnd() < 0.5) health += 1;
