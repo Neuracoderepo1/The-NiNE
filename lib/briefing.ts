@@ -9,6 +9,8 @@ export type WindowKey = 'recent' | 'hour' | 'day';
 export type Moment = { tick: number; kind: string; text: string };
 export type Alert = { level: 'crit' | 'warn' | 'info' | 'ok'; text: string };
 export type Briefing = {
+  meta: { day: number; hour: number; season: string; weather: string };
+  stores: { name: string; value: number; deltaToday: number | null }[];
   asOf: number; from: number; ticks: number; windowLabel: string;
   lede: string[];
   mix: { action: string; count: number; pct: number }[];
@@ -165,5 +167,40 @@ export function buildBriefing(
   }));
   void byName;
 
-  return { asOf, from: from + 1, ticks, windowLabel, lede, mix, moments: trimmed, alerts: watch, social, now };
+  const stores = Object.entries(world.resources ?? {}).map(([name, value]) => ({
+    name, value: Math.round(n(value)), deltaToday: today?.stats?.resources_delta ? Math.round(n(today.stats.resources_delta[name])) : null,
+  }));
+  const meta = { day: world.day, hour: n(world.hour), season: world.season, weather: world.weather };
+
+  return { meta, stores, asOf, from: from + 1, ticks, windowLabel, lede, mix, moments: trimmed, alerts: watch, social, now };
+}
+
+/** Structured facts + instructions, ready to paste into any language model for narration. */
+export function narrationPrompt(b: Briefing): string {
+  const { meta } = b;
+  const sign = (v: number | null) => (v === null ? '' : ` (${v > 0 ? '+' : ''}${v} today)`);
+  const L: string[] = [];
+  L.push('You are the narrator of THE NINE, a simulated settlement of nine artificial residents (AI behaviour is simulated; do not claim they are conscious).');
+  L.push(`Write a vivid but grounded news-style briefing, 3 to 5 short paragraphs and about 200 words, covering ${b.windowLabel.startsWith('So far') ? 'the current day so far' : b.windowLabel.includes('half hour') ? 'the last half hour' : 'the last hour'}. Use ONLY the facts below: do not invent events, people, numbers or causes. Name specific residents. End with one sentence on what to watch next. Plain prose, no bullet points or headings.`);
+  L.push('');
+  L.push('FACTS');
+  L.push(`Time: Day ${meta.day}, ${String(meta.hour).padStart(2, '0')}:00 (${timeOfDay(meta.hour)}), ${meta.season}, weather: ${meta.weather}`);
+  L.push(`Window: ticks ${b.from}-${b.asOf} (${b.ticks} ticks, about ${b.ticks * 5} minutes)`);
+  L.push(`Shared stores: ${b.stores.map((x) => `${x.name} ${x.value}${sign(x.deltaToday)}`).join(', ')}`);
+  L.push(`What the nine did: ${b.mix.length ? b.mix.map((m) => `${m.action} ${m.pct}%`).join(', ') : 'no actions recorded'}`);
+  L.push(`Social: ${b.social.talks} conversations, ${b.social.helps} acts of care${b.social.helper ? ` (most by ${b.social.helper.name}: ${b.social.helper.count})` : ''}, ${b.social.tense} tense exchanges${b.social.pairs.length ? `; most frequent pairs: ${b.social.pairs.map((p) => `${p.pair} x${p.n}`).join(', ')}` : ''}`);
+  L.push('');
+  L.push('KEY MOMENTS (oldest first)');
+  if (b.moments.length) for (const m of [...b.moments].reverse()) L.push(`- T${m.tick} [${m.kind}] ${m.text}`);
+  else L.push('- none');
+  L.push('');
+  L.push('WATCHLIST');
+  for (const a of b.alerts) L.push(`- [${a.level}] ${a.text}`);
+  L.push('');
+  L.push('RESIDENTS RIGHT NOW (needs are 0-100; low is bad)');
+  for (const r of b.now) L.push(`- ${r.name} (${r.role}): ${r.activity}, mood ${r.mood}${r.reason ? `, why: "${r.reason.replace(/\.$/, '')}"` : ''}. health ${r.health}, food ${r.food}, energy ${r.energy}, social ${r.social}`);
+  L.push('');
+  L.push('BASELINE SUMMARY (formulaic, for reference only; rewrite it, do not copy it)');
+  L.push(b.lede.join(' '));
+  return L.join('\n');
 }

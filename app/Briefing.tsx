@@ -1,7 +1,7 @@
 'use client';
 import { useMemo, useState } from 'react';
 import Avatar from './Avatar';
-import { WINDOWS, buildBriefing } from '../lib/briefing';
+import { WINDOWS, buildBriefing, narrationPrompt } from '../lib/briefing';
 import type { BChar, BChron, BEvent, BRel, BWorld, WindowKey } from '../lib/briefing';
 
 const ICON: Record<string, string> = { storm: '⛈', weather: '🌦', season: '🍂', discovery: '🧭', scarcity: '⚠️', conflict: '⚡', care: '🩺', hurt: '🤕', world: '✦' };
@@ -13,14 +13,29 @@ export default function Briefing({ world, chars, events, rels, chron, colors, on
   world: BWorld; chars: (BChar & { age?: number; action_count?: number })[]; events: BEvent[]; rels: BRel[]; chron: BChron[]; colors: string[]; onSelect: (id: string) => void;
 }) {
   const [win, setWin] = useState<WindowKey>('hour');
+  const [copy, setCopy] = useState<'idle' | 'ok' | 'fail'>('idle');
   const b = useMemo(() => buildBriefing({ world, chars, events, rels, chron }, win), [world, chars, events, rels, chron, win]);
+  const copyPrompt = async () => {
+    const text = narrationPrompt(b);
+    let ok = false;
+    try { await navigator.clipboard.writeText(text); ok = true; } catch {
+      try { const t = document.createElement('textarea'); t.value = text; t.style.position = 'fixed'; t.style.opacity = '0'; document.body.appendChild(t); t.select(); ok = document.execCommand('copy'); document.body.removeChild(t); } catch { ok = false; }
+    }
+    setCopy(ok ? 'ok' : 'fail');
+    setTimeout(() => setCopy('idle'), 2500);
+  };
   const maxPct = Math.max(1, ...b.mix.map((m) => m.pct));
   return (
     <section className="briefing">
       <div className="section-head">
         <div><small>THE BRIEFING</small><h2>What is happening in the world.</h2></div>
-        <div className="seg" role="tablist" aria-label="Time window">
-          {WINDOWS.map((w) => <button key={w.key} role="tab" aria-selected={w.key === win} className={w.key === win ? 'on' : ''} onClick={() => setWin(w.key)}>{w.label}</button>)}
+        <div className="brief-tools">
+          <button className={`copybtn${copy === 'ok' ? ' done' : ''}`} onClick={copyPrompt} title="Copies the facts and narration instructions, ready to paste into any AI model">
+            {copy === 'ok' ? 'COPIED \u2713' : copy === 'fail' ? 'COPY FAILED' : 'COPY FOR AI NARRATION'}
+          </button>
+          <div className="seg" role="tablist" aria-label="Time window">
+            {WINDOWS.map((w) => <button key={w.key} role="tab" aria-selected={w.key === win} className={w.key === win ? 'on' : ''} onClick={() => setWin(w.key)}>{w.label}</button>)}
+          </div>
         </div>
       </div>
       <div className="brief-grid">
