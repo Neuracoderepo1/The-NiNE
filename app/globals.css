@@ -139,3 +139,51 @@
  .res-grid{grid-template-columns:repeat(2,1fr)}.res:last-child{grid-column:span 2}
  .rg{grid-template-columns:1fr;gap:24px}.ticker{padding:10px 12px;gap:10px}.ticker .t-meta{display:none}.ticker .t-text{font-size:13px}
 }
+
+/* ===== Briefing ===== */
+.briefing{padding:34px 0;border-top:1px solid #292c29}
+.seg{display:flex;gap:0;border:1px solid #30352f;border-radius:3px;overflow:hidden}
+.seg button{background:none;border:0;border-right:1px solid #30352f;padding:9px 13px;font-size:10px;letter-spacing:.12em;color:#8e958d;cursor:pointer}
+.seg button:last-child{border-right:0}.seg button.on{background:#e9e5dc;color:#0b0d0c}
+.seg button:not(.on):hover{background:#141814;color:#cfd3c8}
+.brief-grid{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:40px;align-items:start}
+.brief-meta{font-size:10px;letter-spacing:.14em;color:#6f756e;margin-bottom:16px}
+.lede{font:17px/1.65 Georgia,serif;color:#b9b7ac;margin:0 0 12px}
+.lede.first{font-size:25px;line-height:1.4;color:#e9e5dc;margin-bottom:16px}
+.bh{font-size:10px;letter-spacing:.15em;color:#8e958d;margin:30px 0 12px;font-weight:400}
+.moments{list-style:none;margin:0;padding:0}
+.moments li{display:grid;grid-template-columns:24px 46px 1fr;gap:6px;align-items:baseline;padding:11px 0;border-bottom:1px solid #1f241f;font-size:14px;line-height:1.5;color:#cfd3c8}
+.moments b{font-size:10px;letter-spacing:.1em;color:#6f756e;font-weight:400}.m-ic{font-size:14px}
+.moments .m-storm span:last-child,.moments .m-conflict span:last-child,.moments .m-scarcity span:last-child,.moments .m-hurt span:last-child{color:#e3b9b3}
+.moments .m-discovery span:last-child{color:#e0d3a3}.moments .m-care span:last-child{color:#d9c0c6}
+.bcard{border:1px solid #292c29;padding:18px;margin-bottom:14px;background:#0d100d}
+.bcard>small{display:block;margin-bottom:12px}
+.alerts{list-style:none;margin:0;padding:0;display:grid;gap:9px}
+.alerts li{display:flex;gap:10px;align-items:baseline;font-size:13px;line-height:1.45;color:#cfd3c8}
+.alerts i{flex:none;width:7px;height:7px;border-radius:50%;background:#8e958d;transform:translateY(-1px)}
+.al-crit i{background:#d1736a;box-shadow:0 0 8px #d1736a}.al-warn i{background:#e0c15a}.al-info i{background:#9db7c9}.al-ok i{background:#a9d1a7}
+.al-crit{color:#f0c9c3}
+.mix{display:grid;gap:9px}.mix-row{display:grid;grid-template-columns:78px 1fr 36px;gap:10px;align-items:center;font-size:12px;color:#aeb1aa}
+.mix-row i{display:block;height:6px;background:#1c211c;border-radius:3px;overflow:hidden}.mix-row u{display:block;height:100%;border-radius:3px;transition:width .6s}
+.mix-row em{font-style:normal;text-align:right;color:#8e958d;font-size:11px}
+.pulse-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:#292c29;border:1px solid #292c29}
+.pulse-grid>div{background:#0d100d;padding:12px 8px;text-align:center}
+.pulse-grid strong{display:block;font:26px Georgia,serif;color:#e9e5dc}.pulse-grid span{display:block;font-size:9px;letter-spacing:.1em;color:#777d76;margin-top:3px}
+.pulse-grid .warnv strong{color:#e3a29a}
+.pairs{font-size:11px;letter-spacing:.04em;color:#8e958d;margin:12px 0 0;line-height:1.6}
+.nowgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:#292c29;border:1px solid #292c29}
+.nowcard{background:#0b0d0c;border:0;text-align:left;padding:16px;display:flex;gap:13px;align-items:flex-start;cursor:pointer;min-width:0}
+.nowcard:hover{background:#111511}
+.now-body{min-width:0;flex:1}
+.now-top{display:flex;gap:8px;align-items:baseline}.now-top b{font:18px Georgia,serif;font-weight:400;color:#e9e5dc}.now-top em{font-style:normal;font-size:10px;letter-spacing:.1em;color:#6f756e}
+.now-body p{margin:5px 0 0;font-size:12px;color:#aeb1aa;line-height:1.45}.now-body p span{color:#777d76}
+.now-why{font:italic 12px/1.45 Georgia,serif!important;color:#8e958d!important}
+.chips{display:flex;gap:5px;flex-wrap:wrap;margin-top:10px}
+.chips span{font-size:9px;letter-spacing:.08em;padding:3px 6px;border:1px solid #2a302a;color:#8e958d;border-radius:2px}
+.chips .lo{color:#e3a29a;border-color:#5a2f2b}.chips .mid{color:#e0c15a;border-color:#4a4426}.chips .ok{color:#a9d1a7;border-color:#2f3f2e}
+@media(max-width:900px){
+ .brief-grid{grid-template-columns:1fr;gap:26px}.lede.first{font-size:21px}
+ .nowgrid{grid-template-columns:1fr}.seg button{padding:8px 9px;font-size:9px}
+ .briefing .section-head{flex-direction:column;align-items:flex-start;gap:14px}
+ .moments li{grid-template-columns:22px 40px 1fr}
+}
