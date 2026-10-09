@@ -24,7 +24,7 @@ export function badgeOf(c: any): string {
   }
 }
 
-const initials = (n: string) => n.slice(0, 2).toUpperCase();
+export const initials = (n: string) => n.slice(0, 3).toUpperCase();
 const level = (v: unknown) => { const n = Number(v); return Number.isFinite(n) ? Math.max(0, Math.min(100, n)) : 0; };
 const needColor = (v: number) => (v < 25 ? '#d1736a' : v < 50 ? '#d7b98e' : '#a9d1a7');
 
